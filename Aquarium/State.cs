@@ -8,23 +8,34 @@ namespace Aquarium
 {
     public class StateMachine
     {
+        public Entity Target;
         public State CurrentState;
+
+        public StateMachine(Entity entity)
+        {
+            Target = entity;
+        }
 
         public void SetState(State state)
         {
+            if(CurrentState != null) CurrentState.SM = this;
             CurrentState?.Exit?.Invoke();
             CurrentState = state;
-            state.Enter?.Invoke();
+            CurrentState.SM = this;
+            CurrentState.Enter?.Invoke();
         }
 
         public void Update()
         {
+            CurrentState.SM = this;
             CurrentState?.Execute();
         }
     }
 
     public class State
     {
+        public StateMachine SM;
+
         public Action Enter;
         public Action Execute;
         public Action Exit;

@@ -9,10 +9,12 @@ namespace Aquarium
         public static Font BaseFont = new Font("Arial", 10);
 
         public Dictionary<string, dynamic> Locals = new Dictionary<string, dynamic>();
+        public string Tag;
         public Vector2 Position;
 
-        public Entity(float x, float y)
+        public Entity(string tag, float x, float y)
         {
+            Tag = tag;
             Position = new Vector2(x, y);
         }
 
@@ -36,6 +38,14 @@ namespace Aquarium
             return null;
         }
 
+        public void RemoveLocal(string key)
+        {
+            if(Locals.ContainsKey(key))
+            {
+                Locals.Remove(key);
+            }
+        }
+
         public void SetPosition(float x, float y, bool relative)
         {
             if(relative) {
@@ -49,7 +59,8 @@ namespace Aquarium
         public void Render(Graphics g)
         {
             g.DrawEllipse(Pens.Black, Position.X, Position.Y, 16, 16);
-            int ypos = 0;
+            g.DrawString($"{Tag} @ {Position}", BaseFont, Brushes.Black, Position.X, Position.Y + 10);
+            int ypos = 12;
             foreach(KeyValuePair<string, dynamic> kv in Locals)
             {
                 g.DrawString($"{kv.Key}: {kv.Value}", BaseFont, Brushes.Black, Position.X, Position.Y + 10 + ypos);

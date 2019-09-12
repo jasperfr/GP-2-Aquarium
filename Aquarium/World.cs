@@ -43,6 +43,16 @@ namespace Aquarium
             Application.Run(Window);
         }
 
+        public void Destroy(Entity entity)
+        {
+            Entities.Remove(entity);
+        }
+
+        public List<Entity> GetEntitiesByTag(string tag)
+        {
+            return Entities.Where(e => e.Tag == tag).ToList();
+        }
+
         public void AddStateMachine(StateMachine sm)
         {
             StateMachines.Add(sm);
