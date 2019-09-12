@@ -8,6 +8,8 @@ namespace Aquarium
     {
         public static Font BaseFont = new Font("Arial", 10);
 
+        public float DrawSize = 5.0f;
+        public bool ShowDebug = true;
         public Dictionary<string, dynamic> Locals = new Dictionary<string, dynamic>();
         public string Tag;
         public Vector2 Position;
@@ -56,14 +58,18 @@ namespace Aquarium
             }
         }
 
-        public void Render(Graphics g)
+        public virtual void Update() { }
+
+        public virtual void Render(Graphics g)
         {
-            g.DrawEllipse(Pens.Black, Position.X, Position.Y, 16, 16);
-            g.DrawString($"{Tag} @ {Position}", BaseFont, Brushes.Black, Position.X, Position.Y + 10);
+            g.DrawEllipse(Pens.White, Position.X, Position.Y, DrawSize, DrawSize);
+            if(!ShowDebug) return;
+            
+            g.DrawString($"{Tag} @ {Position}", BaseFont, Brushes.Lime, Position.X, Position.Y + 10);
             int ypos = 12;
             foreach(KeyValuePair<string, dynamic> kv in Locals)
             {
-                g.DrawString($"{kv.Key}: {kv.Value}", BaseFont, Brushes.Black, Position.X, Position.Y + 10 + ypos);
+                g.DrawString($"{kv.Key}: {kv.Value}", BaseFont, Brushes.Yellow, Position.X, Position.Y + 10 + ypos);
                 ypos += 12;
             }
         }
