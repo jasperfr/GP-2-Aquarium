@@ -5,21 +5,42 @@ using System.Numerics;
 
 namespace Aquarium
 {
+    /// <summary>
+    /// The static Behaviours class contains all steering behaviours neccesary for GameObjects.
+    /// </summary>
     public static class Behaviours
     {
-        public static Vector2 Seek(MovingEntity entity, Vector2 target)
+        /// <summary>
+        /// Seeks and moves towards a target vector.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="target"></param>
+        /// <returns>Vector2 - Steering force</returns>
+        public static Vector2 Seek(GameObject entity, Vector2 target)
         {
             Vector2 desiredVelocity = Vector2.Normalize(target - entity.Position) * entity.MaxSpeed;
             return desiredVelocity - entity.Velocity;
         }
         
-        public static Vector2 Flee(MovingEntity entity, Vector2 target)
+        /// <summary>
+        /// Flees away from a target vector.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="target"></param>
+        /// <returns>Vector2 - Steering force</returns>
+        public static Vector2 Flee(GameObject entity, Vector2 target)
         {
             Vector2 desiredVelocity = Vector2.Normalize(entity.Position - target) * entity.MaxSpeed;
             return desiredVelocity - entity.Velocity;
         }
         
-        public static Vector2 Arrive(MovingEntity entity, Vector2 target)
+        /// <summary>
+        /// Arrives towards a target vector.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="target"></param>
+        /// <returns>Vector2 - Steering force</returns>
+        public static Vector2 Arrive(GameObject entity, Vector2 target)
         {
             Vector2 toTarget = target - entity.Position;
             float dist = toTarget.Length();
@@ -30,9 +51,15 @@ namespace Aquarium
             return desired - entity.Velocity;
         }
 
-        public static Vector2 Flock(MovingEntity entity, List<MovingEntity> flockWith)
+        /// <summary>
+        /// Flocks with a list of GameObjects.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="flockWith"></param>
+        /// <returns>Vector2 - Steering force</returns>
+        public static Vector2 Flock(GameObject entity, List<GameObject> flockWith)
         {
-            List<MovingEntity> neighbors = flockWith.Where(tgt => tgt != entity
+            List<GameObject> neighbors = flockWith.Where(tgt => tgt != entity
             && Vector2.Distance(entity.Position, tgt.Position) < 50).ToList();
 
             // prevent execution if list is empty

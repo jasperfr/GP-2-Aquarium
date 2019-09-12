@@ -19,9 +19,10 @@ namespace Aquarium
             Application.SetCompatibleTextRenderingDefault(false);
 
             Lua state = new Lua();
-            Form1 form = new Form1();
+            GameWindow form = new GameWindow();
             World game = new World(form);
 
+            // Let the rest be handled by the Lua file.
             state.LoadCLRPackage();
             state["game"] = game;
             var res = state.DoFile("Application.lua")[0];

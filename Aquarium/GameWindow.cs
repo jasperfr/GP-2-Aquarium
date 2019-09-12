@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace Aquarium
 {
-    public partial class Form1 : Form
+    public partial class GameWindow : Form
     {
         public World MainWorld;
 
-        public Form1()
+        public GameWindow()
         {
             InitializeComponent();
         }
@@ -27,6 +27,14 @@ namespace Aquarium
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             MainWorld.Render(e.Graphics);
+        }
+
+        private void GameWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.F3)
+            {
+                MainWorld.ShowDebug ^= true;
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Aquarium
 {
-    partial class Form1
+    partial class GameWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -36,16 +36,17 @@
             // 
             this.TickHandle.Tick += new System.EventHandler(this.TickHandle_Tick);
             // 
-            // Form1
+            // GameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.MidnightBlue;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.DoubleBuffered = true;
-            this.Name = "Form1";
+            this.Name = "GameWindow";
             this.Text = "Form1";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyUp);
             this.ResumeLayout(false);
 
         }

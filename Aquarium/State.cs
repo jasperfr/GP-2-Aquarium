@@ -1,40 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aquarium
 {
     public class StateMachine
     {
-        public Entity Target;
+        public GameObject Entity;
         public State CurrentState;
 
-        public StateMachine(Entity entity)
+        public StateMachine(GameObject entity)
         {
-            Target = entity;
+            Entity = entity;
         }
 
         public void SetState(State state)
         {
-            if(CurrentState != null) CurrentState.SM = this;
+            if(CurrentState != null) CurrentState.Handle = this;
             CurrentState?.Exit?.Invoke();
             CurrentState = state;
-            CurrentState.SM = this;
+            CurrentState.Handle = this;
             CurrentState.Enter?.Invoke();
         }
 
         public void Update()
         {
-            CurrentState.SM = this;
+            CurrentState.Handle = this;
             CurrentState?.Execute();
         }
     }
 
     public class State
     {
-        public StateMachine SM;
+        public StateMachine Handle;
 
         public Action Enter;
         public Action Execute;
