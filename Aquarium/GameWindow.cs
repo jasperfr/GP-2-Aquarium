@@ -31,9 +31,17 @@ namespace Aquarium
 
         private void GameWindow_KeyUp(object sender, KeyEventArgs e)
         {
+            if(e.KeyCode == Keys.F1)
+            {
+                MainWorld.ShowEntities ^= true;
+            }
             if(e.KeyCode == Keys.F3)
             {
                 MainWorld.ShowDebug ^= true;
+            }
+            if(e.KeyCode == Keys.F4)
+            {
+                MainWorld.ShowDebugGrid ^= true;
             }
         }
     }

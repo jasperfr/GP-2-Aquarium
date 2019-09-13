@@ -26,6 +26,9 @@ namespace Aquarium
         public float MinSpeed = 1.0f;
         public float MaxSpeed = 10.0f;
         public float Size = 5.0f;
+        public int SpatialX = 0, SpatialY = 0;
+        public Sprite BaseSprite;
+        public float ImageIndex = 0.0f;
 
         // Property acessors
         public Vector2 Direction
@@ -90,8 +93,16 @@ namespace Aquarium
             if(Position.Y < 0) Position.Y = 720;
             if(Position.Y > 720) Position.Y = 0;
         }
+
         public void Render(Graphics g, bool showDebug)
         {
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+
+            Image toDraw = BaseSprite.GetSprite(ref ImageIndex);
+            g.DrawImage(toDraw, Position.X, Position.Y);
+
+            /*
             Vector2 dir = Vector2.Normalize(Direction) * Size;
             g.DrawPolygon(Pens.White, new PointF[]
             {
@@ -118,6 +129,7 @@ namespace Aquarium
                 GameObject entity = (GameObject) LocalVariables["SeekTarget"];
                 g.DrawLine(Pens.Red, Position.X, Position.Y, entity.Position.X, entity.Position.Y);
             }
+            */
         }
     }
 }
