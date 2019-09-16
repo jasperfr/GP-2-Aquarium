@@ -8,13 +8,42 @@ using System.Windows.Forms;
 
 namespace Aquarium
 {
+    public static class Debug
+    {
+
+        public enum Error
+        {
+            UNDEFINED_SPRITE,
+            UNDEFINED_OBJECT
+        }
+
+        public static void ShowError(Error error, string value)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            switch(error)
+            {
+                case Error.UNDEFINED_SPRITE:
+                    Console.WriteLine("ERROR: Attempt to call undefined sprite " + value + ".");
+                    break;
+                case Error.UNDEFINED_OBJECT:
+                    Console.WriteLine("ERROR: Attempt to call undefined object \"" + value + "\".");
+                    break;
+            }
+            Console.ResetColor();
+        }
+    }
+
     public class World
     {
-        // Lists
+        public Random Rand = new Random();
+
+        // Colections
+        public Dictionary<string, dynamic> Globals = new Dictionary<string, dynamic>();
         public Dictionary<string, Sprite> Sprites = new Dictionary<string, Sprite>();
         public Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
-        public Dictionary<string, dynamic> GlobalVariables = new Dictionary<string, dynamic>();
-        public List<StateMachine> StateMachines = new List<StateMachine>();
+        public List<EStateMachine> StateMachines = new List<EStateMachine>();
+
+        // Lists
         public List<GameObject>[][] SpatialPartitioningList;
         public List<GameObject> Entities = new List<GameObject>();
         
@@ -57,15 +86,36 @@ namespace Aquarium
             Application.Run(Window);
         }
         
-        // Getters and setters of State Machine list
-        public void AddStateMachine(StateMachine sm) => StateMachines.Add(sm);
+        public void AddObject(string objName, GameObject obj) {
+            obj.Name = objName;
+            Objects.Add(objName, obj);
+        }
+        public GameObject GetObject(string objName) => Objects.TryGetValue(objName, out GameObject entity) ? entity : null;
         
-        public void AddObject(string objName, GameObject obj) => Objects.Add(objName, obj);
-
         // Getters and setters of Entity list
-        public void AddEntity(GameObject entity) => Entities.Add((GameObject) entity.Clone());
-        public void DestroyEntity(GameObject entity) => Entities.Remove(entity);
-        public bool Has(string tag) => Entities.Where(e => e.GroupTag == tag).Count() > 0;
+        public GameObject CreateInstance(string objName, float x = 0.0f, float y = 0.0f, EStateMachine stateMachine = null)
+        {
+            GameObject instance = GetObject(objName);
+            if(instance == null) {
+                Debug.ShowError(Debug.Error.UNDEFINED_OBJECT, objName);
+                return null;
+            }
+            else {
+                GameObject clone = instance.Duplicate();
+                clone.Position = new Vector2(x, y);
+                Entities.Add(clone);
+
+                if(stateMachine != null)
+                {
+                    stateMachine.Entity = clone;
+                    StateMachines.Add(stateMachine);
+                    stateMachine.Start();
+                }
+                return clone;
+            }
+        }
+        public void Destroy(GameObject entity) => Entities.Remove(entity);
+        public bool Has(string tag) => Entities.Where(e => e.Tag == tag).Count() > 0;
         public bool Exists(GameObject entity) => Entities.Where(e => e.Equals(entity)).Count() > 0;
 
         // Getters and (internal) setters of Spatial Partitioning list
@@ -112,7 +162,7 @@ namespace Aquarium
             for(int Y = y - 1; Y <= y + 1; Y++) {
                 for(int X = x - 1; X <= x + 1; X++) {
                     if(Y < 0 || X < 0 || Y >= SpatialHeight || X >= SpatialWidth) continue;
-                    output.AddRange(SpatialPartitioningList[Y][X].Where(ent => ent.GroupTag == tag));
+                    output.AddRange(SpatialPartitioningList[Y][X].Where(ent => ent.Tag == tag));
                 }
             }
 
@@ -126,8 +176,8 @@ namespace Aquarium
         }
 
         // Get / Filter functions of Entity list
-        public List<GameObject> GetEntitiesByTagName(string tag) => Entities.Where(e => e.GroupTag == tag).ToList();
-        public GameObject GetNearestByTagName(string tag, Vector2 position) => Entities.Where(e => e.GroupTag == tag).OrderBy(e => Vector2.Distance(position, e.Position)).First();
+        public List<GameObject> GetEntitiesByTagName(string tag) => Entities.Where(e => e.Tag == tag).ToList();
+        public GameObject GetNearestByTagName(string tag, Vector2 position) => Entities.Where(e => e.Tag == tag).OrderBy(e => Vector2.Distance(position, e.Position)).First();
         
         // Getters and setters of Sprite list
         public void AddSprite(string name, Sprite sprite) => Sprites.Add(name, sprite);
@@ -137,7 +187,7 @@ namespace Aquarium
         public void Update()
         {
             Entities.ForEach(ent => MoveInSpatialField(ent)); // Move game objects in spatial field.
-            StateMachines.ForEach(sm => sm.Update()); // Update state machines.
+            StateMachines.ForEach(sm => sm.UpdateState()); // Update state machines.
             Entities.ForEach(ent => ent.Update()); // Update game objects.
             Window.Invalidate(); // Invalidate the window.
         }
@@ -168,7 +218,7 @@ namespace Aquarium
             }
             if(ShowEntities)
             {
-                Entities.ForEach(e => e.Render(g, e.GroupTag == "shark" && ShowDebug)); // Render entities.
+                Entities.ForEach(e => e.Render(g, e.Tag == "shark" && ShowDebug)); // Render entities.
             }
         }
     }
