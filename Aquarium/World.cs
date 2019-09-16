@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Dynamic;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -11,6 +12,7 @@ namespace Aquarium
     {
         // Lists
         public Dictionary<string, Sprite> Sprites = new Dictionary<string, Sprite>();
+        public Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
         public Dictionary<string, dynamic> GlobalVariables = new Dictionary<string, dynamic>();
         public List<StateMachine> StateMachines = new List<StateMachine>();
         public List<GameObject>[][] SpatialPartitioningList;
@@ -58,8 +60,10 @@ namespace Aquarium
         // Getters and setters of State Machine list
         public void AddStateMachine(StateMachine sm) => StateMachines.Add(sm);
         
+        public void AddObject(string objName, GameObject obj) => Objects.Add(objName, obj);
+
         // Getters and setters of Entity list
-        public void AddEntity(GameObject entity) => Entities.Add(entity);
+        public void AddEntity(GameObject entity) => Entities.Add((GameObject) entity.Clone());
         public void DestroyEntity(GameObject entity) => Entities.Remove(entity);
         public bool Has(string tag) => Entities.Where(e => e.GroupTag == tag).Count() > 0;
         public bool Exists(GameObject entity) => Entities.Where(e => e.Equals(entity)).Count() > 0;

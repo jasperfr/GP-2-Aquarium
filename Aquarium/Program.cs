@@ -25,7 +25,7 @@ namespace Aquarium
             // Let the rest be handled by the Lua file.
             state.LoadCLRPackage();
             state["game"] = game;
-            var res = state.DoFile("Application.lua")[0];
+            var res = state.DoFile("lua/main.lua")[0];
             Console.WriteLine(res);
         }
     }

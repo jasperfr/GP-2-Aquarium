@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Aquarium
 {
-    public class GameObject
+    public class GameObject : ICloneable
     {
         // Consts
         public const float ForceModifier = 1.2f;
@@ -45,14 +45,10 @@ namespace Aquarium
         }
 
         // Constructors
-        public GameObject(string name) : this(name, 0, 0){ }
-        public GameObject(string name, float xpos, float ypos) : this(name, "", xpos, ypos){ }
-        public GameObject(string name, string tag, float xpos, float ypos)
+        public GameObject() : this(""){ }
+        public GameObject(string tag)
         {
-            Name = name;
             GroupTag = tag;
-            Position.X = xpos;
-            Position.Y = ypos;
         }
 
         // Getters and setters of local variable list
@@ -100,7 +96,7 @@ namespace Aquarium
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
 
             Image toDraw = BaseSprite.GetSprite(ref ImageIndex);
-            g.DrawImage(toDraw, Position.X, Position.Y);
+            g.DrawImage(toDraw, Position.X, Position.Y, Size, Size);
 
             /*
             Vector2 dir = Vector2.Normalize(Direction) * Size;
@@ -114,22 +110,27 @@ namespace Aquarium
                 new PointF(Position.X - dir.X, Position.Y - dir.Y),
                 new PointF(Position.X - dir.Y * 0.5f, Position.Y + dir.X * 0.5f),
             });
+            */
             
-            if(!showDebug) return;
-
-            g.DrawString($"{Name} ({GroupTag}) - {Position}", BaseFont, Brushes.Lime, Position.X, Position.Y + 10);
-            g.DrawString($"Mass: {Mass} Size: {Size} Vel: {Velocity} Spd: {Speed}", BaseFont, Brushes.Magenta, Position.X, Position.Y + 22);
-            int ypos = 24;
+            if(!showDebug || GroupTag != "shark") return;
+            
+            int ypos = 50;
+            g.DrawString($"{Name} ({GroupTag}) - {Position}", BaseFont, Brushes.Lime, Position.X, Position.Y + ypos);
+            ypos += 12;
+            g.DrawString($"Mass: {Mass} Size: {Size} Vel: {Velocity} Spd: {Speed}", BaseFont, Brushes.Magenta, Position.X, Position.Y + ypos);
+            ypos += 12;
             foreach(KeyValuePair<string, dynamic> kv in LocalVariables)
             {
                 g.DrawString($"{kv.Key}: {kv.Value}", BaseFont, Brushes.Yellow, Position.X, Position.Y + 10 + ypos);
                 ypos += 12;
             }
+
             if(LocalVariables.ContainsKey("SeekTarget")) {
                 GameObject entity = (GameObject) LocalVariables["SeekTarget"];
                 g.DrawLine(Pens.Red, Position.X, Position.Y, entity.Position.X, entity.Position.Y);
             }
-            */
         }
+
+        public object Clone() => MemberwiseClone();
     }
 }
