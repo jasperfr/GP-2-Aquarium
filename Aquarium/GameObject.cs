@@ -1,7 +1,10 @@
-﻿using System;
+﻿using NLua;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Dynamic;
 using System.Numerics;
+using System.Windows.Forms;
 
 namespace Aquarium
 {
@@ -47,9 +50,11 @@ namespace Aquarium
 
     public class GameObject
     {
-        public static Font BaseFont = new Font("Arial", 10);
-        public Dictionary<string, dynamic> LocalVariables = new Dictionary<string, dynamic>();
-        public List<Action<GameObject>> LocalActions = new List<Action<GameObject>>();
+        private static Font _font = new Font("Arial", 10);
+
+        public Dictionary<string, dynamic> Locals = new Dictionary<string, dynamic>();
+        public Action<GameObject> StepEvent { get; set; }           // Step event of the object.
+        public Action<int, GameObject> KeyboardEvent { get; set; }  // Keyboard events.
         
         public string Name;
         public string Tag;
@@ -62,15 +67,25 @@ namespace Aquarium
             Tag = tag;
         }
         
-        public void SetLocal(string name, dynamic value) => LocalVariables[name] = value;
-        public dynamic GetLocal(string key) => LocalVariables.TryGetValue(key, out dynamic val) ? val : null;
-        public bool RemoveLocal(string key) => LocalVariables.ContainsKey(key) ? LocalVariables.Remove(key) : false;
-        public void AddAction(Action<GameObject> action) => LocalActions.Add(action);
+        public bool Has(string key) => Locals.ContainsKey(key);
+        public dynamic Get(string key) => Locals.TryGetValue(key, out dynamic value) ? value : null;
+        public void Set(string key, dynamic value) => Locals[key] = value;
+        public void Remove(string key) => Locals.Remove(key);
+
+        public void FireKeyboardEvent(KeyEventArgs key) => KeyboardEvent?.Invoke(key.KeyValue, this);
 
         public void Update()
         {   
+            /*
+            Dictionary<object, object> dict = Program.state.GetTableDict(_);
+            foreach(var kv in dict)
+            {
+                Debug.Log(kv.Key.ToString() + " => " + kv.Value.ToString());
+            }
+            */
+
             Position += Velocity;
-            LocalActions.ForEach(action => action.Invoke(this));
+            StepEvent?.Invoke(this);
 
             // Might have to change this. Loops the room around.
             if(Position.X > 1280) Position.X = 0;
@@ -130,20 +145,10 @@ namespace Aquarium
             if(!showDebug || Tag != "shark") return;
             
             int ypos = 50;
-            g.DrawString($"{Name} ({Tag}) - {Position}", BaseFont, Brushes.Lime, Position.X, Position.Y + ypos);
+            g.DrawString($"{Name} ({Tag}) - {Position}", _font, Brushes.Lime, Position.X, Position.Y + ypos);
             ypos += 12;
-            g.DrawString($"Mass: {Mass} Size: {Size} Vel: {Velocity} Spd: {Speed}", BaseFont, Brushes.Magenta, Position.X, Position.Y + ypos);
+            g.DrawString($"Mass: {Mass} Size: {Size} Vel: {Velocity} Spd: {Speed}", _font, Brushes.Magenta, Position.X, Position.Y + ypos);
             ypos += 12;
-            foreach(KeyValuePair<string, dynamic> kv in LocalVariables)
-            {
-                g.DrawString($"{kv.Key}: {kv.Value}", BaseFont, Brushes.Yellow, Position.X, Position.Y + 10 + ypos);
-                ypos += 12;
-            }
-
-            if(LocalVariables.ContainsKey("SeekTarget")) {
-                GameObject entity = (GameObject) LocalVariables["SeekTarget"];
-                g.DrawLine(Pens.Red, Position.X, Position.Y, entity.Position.X, entity.Position.Y);
-            }
         }
         #endregion
 
@@ -162,14 +167,15 @@ namespace Aquarium
                 Mass = this.Mass,
                 MinSpeed = this.MinSpeed,
                 MaxSpeed = this.MaxSpeed,
-                BaseSprite = this.BaseSprite  
+                BaseSprite = this.BaseSprite,
+                StepEvent = StepEvent,
+                KeyboardEvent = KeyboardEvent
             };
-
-            foreach(KeyValuePair<string, dynamic> kv in this.LocalVariables) {
-                duplicate.SetLocal(kv.Key, kv.Value);
+            
+            
+            foreach(var kvp in Locals) {
+                duplicate.Set(kvp.Key, kvp.Value);
             }
-
-            LocalActions.ForEach(action => duplicate.LocalActions.Add(action));
 
             return duplicate;
         }

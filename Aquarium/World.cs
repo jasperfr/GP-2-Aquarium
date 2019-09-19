@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NLua;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -15,6 +17,13 @@ namespace Aquarium
         {
             UNDEFINED_SPRITE,
             UNDEFINED_OBJECT
+        }
+
+        public static void Log(string value)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("[DEBUG] " + value);
+            Console.ResetColor();
         }
 
         public static void ShowError(Error error, string value)
@@ -86,6 +95,42 @@ namespace Aquarium
             Application.Run(Window);
         }
         
+        /// <summary>
+        /// Generates a map from the object provided.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="objName"></param>
+        public void GenerateMap(string filename, int size)
+        {
+            // Hacked together! Fix in new update!!!
+            Dictionary<char, string> objects = new Dictionary<char, string>();
+
+            int xpos = 0;
+            int ypos = 0;
+            string[] lines = File.ReadAllLines(filename);
+            for(int y = 0; y < lines.Length; y++)
+            {
+                // It's an object.
+                if(lines[y].StartsWith("!"))
+                {
+                    char enumerator = lines[y].Split('=')[0].TrimStart('!')[0];
+                    string objName = lines[y].Split('=')[1];
+                    Console.WriteLine($"{enumerator} => {objName}");
+                    objects.Add(enumerator, objName);
+                    continue;
+                }
+
+                for(int x = 0; x < lines[y].Length; x++)
+                {
+                    if(lines[y][x] != ' ')
+                        CreateInstance(objects[lines[y][x]], xpos, ypos);
+                    xpos += size;
+                }
+                ypos += size;
+                xpos = 0;
+            }
+        }
+
         public void AddObject(string objName, GameObject obj) {
             obj.Name = objName;
             Objects.Add(objName, obj);
@@ -184,6 +229,10 @@ namespace Aquarium
         public Sprite GetSprite(string name) => Sprites.TryGetValue(name, out Sprite sprite) ? sprite : null;
 
         // Global game functions
+        public void TriggerKeyboardEvent(KeyEventArgs key)
+        {
+            Entities.ForEach(ent => ent.FireKeyboardEvent(key));
+        }
         public void Update()
         {
             Entities.ForEach(ent => MoveInSpatialField(ent)); // Move game objects in spatial field.

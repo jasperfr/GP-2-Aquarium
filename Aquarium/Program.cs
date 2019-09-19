@@ -9,6 +9,8 @@ namespace Aquarium
 {
     static class Program
     {
+        public static Lua state = new Lua();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,7 +20,6 @@ namespace Aquarium
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Lua state = new Lua();
             GameWindow form = new GameWindow();
             World game = new World(form);
 

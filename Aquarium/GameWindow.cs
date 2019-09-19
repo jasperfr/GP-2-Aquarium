@@ -43,6 +43,7 @@ namespace Aquarium
             {
                 MainWorld.ShowDebugGrid ^= true;
             }
+            MainWorld.TriggerKeyboardEvent(e);
         }
     }
 }
