@@ -1,0 +1,16 @@
+!X=obj_rocks
+!O=obj_coral
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                  O       
+        O O   OX XX       
+ OX   X XXX    XXX    O   
+ X    X   X     X     X   
+XXXXXXXXXXXXXXXXXXXXXXXXXX
