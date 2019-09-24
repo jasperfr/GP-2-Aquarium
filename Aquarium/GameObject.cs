@@ -57,9 +57,13 @@ namespace Aquarium
         public Action<int, GameObject> KeyboardEvent { get; set; }  // Keyboard events.
         
         public string Name;
+        public string Alias;
         public string Tag;
+        public Vector2 StartPosition;
         public Vector2 Position;
+        public bool IsSpatial = false;
         public int SpatialX = 0, SpatialY = 0;
+        public ConsoleColor TalkColor = ConsoleColor.White;
         
         public GameObject() : this(""){ }
         public GameObject(string tag)
@@ -86,12 +90,6 @@ namespace Aquarium
 
             Position += Velocity;
             StepEvent?.Invoke(this);
-
-            // Might have to change this. Loops the room around.
-            if(Position.X > 1280) Position.X = 0;
-            if(Position.X < 0) Position.X = 1280;
-            if(Position.Y < 0) Position.Y = 720;
-            if(Position.Y > 720) Position.Y = 0;
         }
 
         #region Movement Behaviour functionality
@@ -165,6 +163,7 @@ namespace Aquarium
                 Tag = this.Tag,
                 Size = this.Size,
                 Mass = this.Mass,
+                IsSpatial = this.IsSpatial,
                 MinSpeed = this.MinSpeed,
                 MaxSpeed = this.MaxSpeed,
                 BaseSprite = this.BaseSprite,
@@ -178,6 +177,13 @@ namespace Aquarium
             }
 
             return duplicate;
+        }
+
+        public void Say(string text)
+        {
+            Console.ForegroundColor = TalkColor;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
     }
 }

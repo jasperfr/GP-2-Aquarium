@@ -15,7 +15,7 @@ namespace Aquarium
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -26,7 +26,7 @@ namespace Aquarium
             // Let the rest be handled by the Lua file.
             state.LoadCLRPackage();
             state["game"] = game;
-            var res = state.DoFile("lua/main.lua")[0];
+            object res = state.DoFile(@"lua\main.lua")[0];
             Console.WriteLine(res);
         }
     }

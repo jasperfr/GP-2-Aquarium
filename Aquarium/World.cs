@@ -138,7 +138,7 @@ namespace Aquarium
         public GameObject GetObject(string objName) => Objects.TryGetValue(objName, out GameObject entity) ? entity : null;
         
         // Getters and setters of Entity list
-        public GameObject CreateInstance(string objName, float x = 0.0f, float y = 0.0f, EStateMachine stateMachine = null)
+        public GameObject CreateInstance(string objName, float x = 0.0f, float y = 0.0f, EStateMachine stateMachine = null, string alias = "Instance", ConsoleColor talkColor = ConsoleColor.White)
         {
             GameObject instance = GetObject(objName);
             if(instance == null) {
@@ -147,7 +147,10 @@ namespace Aquarium
             }
             else {
                 GameObject clone = instance.Duplicate();
+                clone.StartPosition = new Vector2(x, y);
                 clone.Position = new Vector2(x, y);
+                clone.Alias = alias;
+                clone.TalkColor = talkColor;
                 Entities.Add(clone);
 
                 if(stateMachine != null)
@@ -166,6 +169,10 @@ namespace Aquarium
         // Getters and (internal) setters of Spatial Partitioning list
         public void MoveInSpatialField(GameObject entity)
         {
+            if(!entity.IsSpatial) return;
+
+            // Debug.Log($"Spatial field is {entity.SpatialX},{entity.SpatialY}");
+
             // Remove the entity from the spatial list.
             SpatialPartitioningList[entity.SpatialY][entity.SpatialX].Remove(entity);
 
