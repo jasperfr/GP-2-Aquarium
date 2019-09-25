@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Aquarium.Instances;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace Aquarium
+namespace Aquarium.AI
 {
     /// <summary>
     /// The static Behaviours class contains all steering behaviours neccesary for GameObjects.
@@ -16,10 +17,10 @@ namespace Aquarium
         /// <param name="entity"></param>
         /// <param name="target"></param>
         /// <returns>Vector2 - Steering force</returns>
-        public static Vector2 Seek(GameObject entity, Vector2 target)
+        public static Vector2 Seek(GameInstance entity, Vector2 target)
         {
-            Vector2 desiredVelocity = Vector2.Normalize(target - entity.Position) * entity.MaxSpeed;
-            return desiredVelocity - entity.Velocity;
+            Vector2 desiredVelocity = Vector2.Normalize(target - entity.position) * entity.max_speed;
+            return desiredVelocity - entity.velocity;
         }
         
         /// <summary>
@@ -28,10 +29,10 @@ namespace Aquarium
         /// <param name="entity"></param>
         /// <param name="target"></param>
         /// <returns>Vector2 - Steering force</returns>
-        public static Vector2 Flee(GameObject entity, Vector2 target)
+        public static Vector2 Flee(GameInstance entity, Vector2 target)
         {
-            Vector2 desiredVelocity = Vector2.Normalize(entity.Position - target) * entity.MaxSpeed;
-            return desiredVelocity - entity.Velocity;
+            Vector2 desiredVelocity = Vector2.Normalize(entity.position - target) * entity.max_speed;
+            return desiredVelocity - entity.velocity;
         }
         
         /// <summary>
@@ -40,15 +41,15 @@ namespace Aquarium
         /// <param name="entity"></param>
         /// <param name="target"></param>
         /// <returns>Vector2 - Steering force</returns>
-        public static Vector2 Arrive(GameObject entity, Vector2 target)
+        public static Vector2 Arrive(GameInstance entity, Vector2 target)
         {
-            Vector2 toTarget = target - entity.Position;
+            Vector2 toTarget = target - entity.position;
             float dist = toTarget.Length();
 
-            float rampSpeed = entity.MaxSpeed * dist / 50f;
-            float clipSpeed = Math.Min(rampSpeed, entity.MaxSpeed);
+            float rampSpeed = entity.max_speed * dist / 50f;
+            float clipSpeed = Math.Min(rampSpeed, entity.max_speed);
             Vector2 desired = (clipSpeed / dist) * toTarget;
-            return desired - entity.Velocity;
+            return desired - entity.velocity;
         }
 
         /// <summary>
@@ -57,10 +58,10 @@ namespace Aquarium
         /// <param name="entity"></param>
         /// <param name="flockWith"></param>
         /// <returns>Vector2 - Steering force</returns>
-        public static Vector2 Flock(GameObject entity, List<GameObject> flockWith)
+        public static Vector2 Flock(GameInstance entity, List<GameInstance> flockWith)
         {
-            List<GameObject> neighbors = flockWith.Where(tgt => tgt != entity
-            && Vector2.Distance(entity.Position, tgt.Position) < 50).ToList();
+            List<GameInstance> neighbors = flockWith.Where(tgt => tgt != entity
+            && Vector2.Distance(entity.position, tgt.position) < 50).ToList();
 
             // prevent execution if list is empty
             if(neighbors.Count == 0) {
@@ -70,7 +71,7 @@ namespace Aquarium
             // separation
             Vector2 separationForce = new Vector2(0, 0);
             neighbors.ForEach(tgt => {
-                Vector2 toAgent = entity.Position - tgt.Position;
+                Vector2 toAgent = entity.position - tgt.position;
                 separationForce += Vector2.Normalize(toAgent / toAgent.Length());
             });
             
@@ -78,18 +79,18 @@ namespace Aquarium
             Vector2 cohesionForce = new Vector2(0, 0);
             Vector2 centerOfMass = new Vector2(0, 0);
             neighbors.ForEach(tgt => {
-                centerOfMass += tgt.Position;
+                centerOfMass += tgt.position;
             });
             centerOfMass /= neighbors.Count;
-            cohesionForce = Vector2.Normalize(centerOfMass - entity.Position) * entity.MaxSpeed - entity.Velocity;
+            cohesionForce = Vector2.Normalize(centerOfMass - entity.position) * entity.max_speed - entity.velocity;
 
             // alignment
             Vector2 alignmentForce = new Vector2(0, 0);
             Vector2 averageHeading = new Vector2();
             neighbors.ForEach(tgt => {
-                averageHeading += tgt.Direction;
+                averageHeading += tgt.direction;
             });
-            alignmentForce = (averageHeading / neighbors.Count) - entity.Direction;
+            alignmentForce = (averageHeading / neighbors.Count) - entity.direction;
 
             // calculate flocking force
             return (cohesionForce + alignmentForce + separationForce) / 3.0f;

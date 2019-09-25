@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aquarium
+namespace Aquarium.deprecated
 {
     public class StateMachine
     {
