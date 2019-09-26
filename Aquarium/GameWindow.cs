@@ -30,21 +30,7 @@ namespace Aquarium
 
         private void GameWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            /* -- the keyboard event has been deprecated
-            if(e.KeyCode == Keys.F1)
-            {
-                MainWorld.ShowEntities ^= true;
-            }
-            if(e.KeyCode == Keys.F3)
-            {
-                MainWorld.ShowDebug ^= true;
-            }
-            if(e.KeyCode == Keys.F4)
-            {
-                MainWorld.ShowDebugGrid ^= true;
-            }
-            MainWorld.TriggerKeyboardEvent(e);
-            */
+            Game.keyboard_event(e);
         }
     }
 }

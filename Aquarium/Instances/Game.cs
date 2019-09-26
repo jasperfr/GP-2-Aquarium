@@ -44,14 +44,16 @@ namespace Aquarium.Instances
                 }
             }
         }
-        
+
         public static void start()
         {
+            game_instances.ForEach(inst => inst.CreateEvent());
             window.TickHandle.Start();
             Application.Run(window);
         }
         public static void add_sprite(string name, Sprite sprite) => sprites.Add(name, sprite);
-        public static void add_object(Instance instance) => instances.Add(instance.name, instance);
+        public static Sprite get_sprite(string name) => sprites.TryGetValue(name, out Sprite sprite) ? sprite : null;
+        public static void add_object(string name, Instance instance) { instance.name = name; instances.Add(name, instance); }
         public static GameInstance create_instance(float x, float y, string name, StateMachine state_machine = null)
         {
             if (instances.TryGetValue(name, out Instance instance))
@@ -110,14 +112,18 @@ namespace Aquarium.Instances
 
             return output;
         }
+        public static void keyboard_event(KeyEventArgs kva)
+        {
+            game_instances.ForEach(inst => inst.KeyboardEvent(kva));
+        }
         public static void update()
         {
             game_instances.ForEach(inst => move_spatial(inst));
             state_machines.ForEach(sm => sm.UpdateState());
+            game_instances.ForEach(inst => inst.StepEvent());
             game_instances.ForEach(inst => inst.Update());
             window.Invalidate();
         }
-
         public static void render(Graphics g)
         {
             game_instances.ForEach(inst => inst.Render(g));

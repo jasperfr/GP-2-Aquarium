@@ -23,8 +23,9 @@ namespace Aquarium.Instances
         }
 
         public GameInstance(string name, Sprite sprite, float x, float y)
-            : base(name, sprite)
         {
+            this.sprite_index = sprite;
+            this.name = name;
             position = new Vector2(x, y);
             start = new Vector2(x, y);
         }
@@ -36,7 +37,7 @@ namespace Aquarium.Instances
         }
         public void change_sprite(Sprite sprite)
         {
-            this.sprite = sprite;
+            this.sprite_index = sprite;
         }
         #endregion
 
@@ -63,7 +64,7 @@ namespace Aquarium.Instances
         }
         public void Render(Graphics g)
         {
-            Image image = sprite.GetSprite(image_speed, ref image_index);
+            Image image = sprite_index.GetSprite(image_speed, ref image_index);
             g.DrawImage(image, position.X, position.Y, image_size, image_size);
         }
         #endregion

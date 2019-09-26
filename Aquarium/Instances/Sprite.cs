@@ -2,23 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Aquarium
+namespace Aquarium.Instances
 {
     public class Sprite
     {
         public List<Image> Images = new List<Image>();
 
         public Sprite() { }
-        public Sprite(string filename)
-        {
-            AddImage(filename);
-        }
-        public Sprite(List<string> filenames)
-        {
-            filenames.ForEach(file => AddImage(file));
-        }
 
-        public void AddImage(string filename) => Images.Add(Image.FromFile(filename));
+        public void add_image(string filename) => Images.Add(Image.FromFile(filename));
         public Image GetSprite(float imageSpeed, ref float index)
         {
             index += imageSpeed;
