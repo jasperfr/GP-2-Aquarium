@@ -8,7 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 
-namespace Aquarium
+namespace Aquarium.deprecated
 {
     public static class Debug
     {

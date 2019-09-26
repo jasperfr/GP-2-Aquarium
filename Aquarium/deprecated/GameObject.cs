@@ -6,7 +6,7 @@ using System.Dynamic;
 using System.Numerics;
 using System.Windows.Forms;
 
-namespace Aquarium
+namespace Aquarium.deprecated
 {
     public class EStateMachine
     {
