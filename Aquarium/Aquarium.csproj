@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,6 +64,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\Behaviours.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Sets\FuzzySet.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Sets\LeftShoulderSet.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Sets\RightShoulderSet.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Sets\TriangularSet.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Terms\FuzzyAND.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Terms\FuzzyTerm.cs" />
+    <Compile Include="AI\Fuzzy Logic\Fuzzy Terms\FuzzyTermSet.cs" />
+    <Compile Include="AI\FuzzyAPI.cs" />
+    <Compile Include="AI\Fuzzy Logic\FuzzyModule.cs" />
+    <Compile Include="AI\Fuzzy Logic\FuzzyRule.cs" />
+    <Compile Include="AI\Fuzzy Logic\FuzzyVariable.cs" />
     <Compile Include="AI\Pathfinding.cs" />
     <Compile Include="GameWindow.cs">
       <SubType>Form</SubType>

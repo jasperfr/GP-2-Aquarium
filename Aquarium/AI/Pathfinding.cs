@@ -35,10 +35,12 @@ namespace Aquarium.AI
     {
         public static float grid = 32.0f;
 
+        /*
         public static List<Vector2> AStar(Vector2 start, Vector2 target, List<Vector2> locations)
         {
             Location current = null;
             Location start = new Location(start.X, start.Y);
         }
+        */
     }
 }
