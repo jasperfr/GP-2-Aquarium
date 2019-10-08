@@ -21,6 +21,8 @@ namespace Aquarium.Instances
         public int sp_grid_size = 32, sp_width, sp_height;
         public List<GameInstance>[][] sp_list;
 
+        public Location[][] renderable_grid;
+
         public int speed
         {
             get => window.TickHandle.Interval;
@@ -154,6 +156,10 @@ namespace Aquarium.Instances
         public void render(Graphics g)
         {
             game_instances.ForEach(inst => inst.Render(g));
+            if(renderable_grid != null)
+            {
+                PathfindAPI.Render(g, renderable_grid);
+            }
         }
         public void log(string str)
         {

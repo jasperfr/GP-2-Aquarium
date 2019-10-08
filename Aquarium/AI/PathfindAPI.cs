@@ -1,6 +1,7 @@
 ﻿using Aquarium.Instances;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -25,8 +26,8 @@ namespace Aquarium.AI
             var proposed = new List<Location>();
             if (X > 0) if (!locations[Y][X - 1].Disabled) proposed.Add(locations[Y][X - 1]);
             if (Y > 0) if (!locations[Y - 1][X].Disabled) proposed.Add(locations[Y - 1][X]);
-            if (X < W) if (!locations[Y][X + 1].Disabled) proposed.Add(locations[Y][X + 1]);
-            if (Y < H) if (!locations[Y + 1][X].Disabled) proposed.Add(locations[Y + 1][X]);
+            if (X < W-1) if (!locations[Y][X + 1].Disabled) proposed.Add(locations[Y][X + 1]);
+            if (Y < H-1) if (!locations[Y + 1][X].Disabled) proposed.Add(locations[Y + 1][X]);
             return proposed;
         }
         public void CalculateH(Location target)
@@ -109,10 +110,10 @@ namespace Aquarium.AI
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static List<Vector2> a_star(Location[][] configuredLocations, Vector2 start, Vector2 end)
+        public static Stack<Vector2> a_star(Location[][] configuredLocations, Vector2 start, Vector2 end)
         {
             // create output list
-            List<Vector2> output = new List<Vector2>();
+            Stack<Vector2> output = new Stack<Vector2>();
 
             Location currentLocation = null;
 
@@ -185,26 +186,41 @@ namespace Aquarium.AI
             }
 
             // add the end vector to the output.
-            output.Add(end);
+            output.Push(end);
 
             // Add all locations from end to start.
             var loc = endLocation;
             while(loc.Previous != null)
             {
                 Vector2 position = new Vector2(loc.X * _gridSize, loc.Y * _gridSize);
-                output.Add(position);
+                // prevent out of memory exceptions
+                if (output.Contains(position)) return null;
+                output.Push(position);
                 loc = loc.Previous;
             }
             Console.WriteLine(endLocation);
 
             // add the start vector to the output.
-            output.Add(start);
+            output.Push(start);
 
             // reverse the list.
             output.Reverse();
 
             // halt build errors for now.
             return output;
+        }
+
+        public static void Render(Graphics g, Location[][] locations)
+        {
+            for (int y = 0; y < locations.Length; y++)
+            {
+                for (int x = 0; x < locations[0].Length; x++)
+                {
+                    Location loc = locations[y][x];
+                    if (loc.Disabled) g.FillEllipse(Brushes.Red, x * _gridSize - 2.0f, y * _gridSize - 2.0f, 4.0f, 4.0f);
+                    else g.FillEllipse(Brushes.Lime, x * _gridSize - 2.0f, y * _gridSize - 2.0f, 4.0f, 4.0f);
+                }
+            }
         }
     }
 }
