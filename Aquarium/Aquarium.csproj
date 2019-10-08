@@ -75,7 +75,7 @@
     <Compile Include="AI\Fuzzy Logic\FuzzyModule.cs" />
     <Compile Include="AI\Fuzzy Logic\FuzzyRule.cs" />
     <Compile Include="AI\Fuzzy Logic\FuzzyVariable.cs" />
-    <Compile Include="AI\Pathfinding.cs" />
+    <Compile Include="AI\PathfindAPI.cs" />
     <Compile Include="GameWindow.cs">
       <SubType>Form</SubType>
     </Compile>
