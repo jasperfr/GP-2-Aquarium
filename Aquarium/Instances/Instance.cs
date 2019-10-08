@@ -17,6 +17,7 @@ namespace Aquarium.Instances
     {
         public string name;
         public float image_size = 32.0f, image_speed = 0.0f, image_index = 0.0f;
+        public float mass, min_speed, max_speed;
         public Dictionary<string, dynamic> local;
 
         public Sprite sprite_index { get; set; }
@@ -45,7 +46,10 @@ namespace Aquarium.Instances
             event_step = event_step,
             image_index = image_index,
             image_size = image_size,
-            image_speed = image_speed
+            image_speed = image_speed,
+            mass = mass,
+            min_speed = min_speed,
+            max_speed = max_speed
         };
         public void CreateEvent()
         {

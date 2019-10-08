@@ -6,7 +6,6 @@ namespace Aquarium.Instances
     public class GameInstance : Instance
     {
         public Vector2 position, start, velocity;
-        public float mass, min_speed, max_speed;
         public int spatial_x, spatial_y;
         public Vector2 direction
         {
@@ -49,11 +48,11 @@ namespace Aquarium.Instances
             velocity = velocity.TruncateMin(min_speed);
             velocity = velocity.TruncateMax(max_speed);
 
-            if (float.IsNaN(velocity.X))
+            if (float.IsNaN(velocity.X) || float.IsInfinity(velocity.X))
             {
                 velocity.X = 0.0f;
             }
-            if (float.IsNaN(velocity.Y))
+            if (float.IsNaN(velocity.Y) || float.IsInfinity(velocity.Y))
             {
                 velocity.Y = 0.0f;
             }
@@ -64,8 +63,11 @@ namespace Aquarium.Instances
         }
         public void Render(Graphics g)
         {
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+            var pivot = image_size * 0.5f;
             Image image = sprite_index.GetSprite(image_speed, ref image_index);
-            g.DrawImage(image, position.X, position.Y, image_size, image_size);
+            g.DrawImage(image, position.X - pivot, position.Y - pivot, image_size, image_size);
         }
         #endregion
     }

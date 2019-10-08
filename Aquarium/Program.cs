@@ -21,10 +21,12 @@ namespace Aquarium
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Game.window = new GameWindow();
+            Game game = new Game();
+            game.window = new GameWindow(game);
 
             // Let the rest be handled by the Lua file.
             state.LoadCLRPackage();
+            state["game"] = game;
             object res = state.DoFile(@"lua\main.lua")[0];
             Console.WriteLine(res);
         }

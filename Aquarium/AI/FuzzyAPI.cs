@@ -38,8 +38,6 @@ namespace Aquarium.AI
         {
             module.Fuzzify(xname, ref xval);
             module.Fuzzify(yname, ref yval);
-            Console.WriteLine(module.VarMap[xname]);
-            Console.WriteLine(module.VarMap[yname]);
             return module.Defuzzify(outname, FuzzyModule.DefuzzifyType.CENTROID);
         }
     }

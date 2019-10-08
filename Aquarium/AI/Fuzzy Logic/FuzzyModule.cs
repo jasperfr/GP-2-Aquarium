@@ -46,11 +46,8 @@ namespace Aquarium.AI.Fuzzy_Logic
 
             for (int i = 0; i < Rules.Count; i++)
             {
-                Console.WriteLine($"{Rules[i]}");
                 Rules[i].Calculate();
             }
-
-            Console.WriteLine();
 
             // custom code - get maximum consequences of ruleset
             // it's trash though, fix later

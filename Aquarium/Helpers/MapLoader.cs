@@ -7,7 +7,7 @@ namespace Aquarium.Helpers
 {
     public static class MapLoader
     {
-        public static void Load(string filename, int size)
+        public static void Load(Game game, string filename, int size)
         {
             // Hacked together! Fix in new update!!!
             Dictionary<char, string> objects = new Dictionary<char, string>();
@@ -30,7 +30,7 @@ namespace Aquarium.Helpers
                 for (int x = 0; x < lines[y].Length; x++)
                 {
                     if (lines[y][x] != ' ')
-                        Game.create_instance(xpos, ypos, objects[lines[y][x]]);
+                        game.create_instance(xpos, ypos, objects[lines[y][x]]);
                     xpos += size;
                 }
                 ypos += size;
