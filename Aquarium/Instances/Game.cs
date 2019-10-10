@@ -99,7 +99,7 @@ namespace Aquarium.Instances
         public bool exists(GameInstance instance) => game_instances.Contains(instance);
         public void destroy(GameInstance instance) => game_instances.Remove(instance);
         public List<GameInstance> find_all_instances(string name) => game_instances.Where(gi => gi.name == name).ToList();
-        public GameInstance find_nearest_instance(string name, Vector2 position) => game_instances.Where(e => e.name == name).OrderBy(e => Vector2.Distance(position, e.position)).FirstOrDefault();
+        public GameInstance find_nearest_instance(string name, Vector2 position) => game_instances.Where(e => e.name == name).OrderBy(e => Vector2.DistanceSquared(position, e.position)).FirstOrDefault();
         public void move_spatial(GameInstance instance)
         {
             // Remove the entity from the spatial list.

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
 
 namespace Aquarium.Instances
@@ -66,8 +67,25 @@ namespace Aquarium.Instances
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
             var pivot = image_size * 0.5f;
+
             Image image = sprite_index.GetSprite(image_speed, ref image_index);
             g.DrawImage(image, position.X - pivot, position.Y - pivot, image_size, image_size);
+
+            // debug - show path grid
+            if(local.ContainsKey("path"))
+            {
+                if (local["path"] == null) return;
+                if ((object)(local["path"]).GetType() != typeof(Stack<Vector2>)) return;
+
+                Vector2[] vec = ((Stack<Vector2>)local["path"]).ToArray();
+
+                if (vec.Length < 2) return;
+
+                for(int i = 0; i < vec.Length - 1; i++)
+                {
+                    g.DrawLine(Pens.Yellow, vec[i].X, vec[i].Y, vec[i + 1].X, vec[i + 1].Y);
+                }
+            }
         }
         #endregion
     }
